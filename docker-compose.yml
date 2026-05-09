@@ -1,0 +1,45 @@
+version: "3.9"
+
+# Run all three services with: docker-compose up --build
+# (Or for fast iteration, just `make run` and skip Docker.)
+
+services:
+  claims-agent:
+    build: .
+    command: uvicorn agents.claims_agent.main:app --host 0.0.0.0 --port 8001
+    ports: ["8001:8001"]
+    env_file: .env
+    environment:
+      - CLAIMS_AGENT_URL=http://claims-agent:8001
+      - POLICY_AGENT_URL=http://policy-agent:8002
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8001/health')"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  policy-agent:
+    build: .
+    command: uvicorn agents.policy_agent.main:app --host 0.0.0.0 --port 8002
+    ports: ["8002:8002"]
+    env_file: .env
+    environment:
+      - CLAIMS_AGENT_URL=http://claims-agent:8001
+      - POLICY_AGENT_URL=http://policy-agent:8002
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8002/health')"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  gateway:
+    build: .
+    command: uvicorn gateway.main:app --host 0.0.0.0 --port 8000
+    ports: ["8000:8000"]
+    env_file: .env
+    environment:
+      - CLAIMS_AGENT_URL=http://claims-agent:8001
+      - POLICY_AGENT_URL=http://policy-agent:8002
+    depends_on:
+      claims-agent: {condition: service_healthy}
+      policy-agent: {condition: service_healthy}
