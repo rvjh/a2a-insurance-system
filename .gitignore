@@ -6,6 +6,7 @@ __pycache__/
 .ruff_cache/
 .venv/
 venv/
+myenv1
 *.egg-info/
 reports/*.html
 .DS_Store

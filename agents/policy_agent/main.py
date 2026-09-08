@@ -63,8 +63,8 @@ def build_policy_agent() -> BaseA2AAgent:
     return BaseA2AAgent(
         agent_card=card,
         tool_registry=registry,
-        llm=LLMClient(api_key=settings.anthropic_api_key, default_model=MODEL_BALANCED),
-        system_prompt=POLICY_SYSTEM_PROMPT,
+        llm=LLMClient(api_key=settings.groq_api_key, default_model=MODEL_BALANCED,),
+        system_prompt=POLICY_SYSTEM_PROMPT
     )
 
 

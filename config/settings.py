@@ -27,8 +27,12 @@ class Settings(BaseSettings):
     policy_agent_url: str = "http://localhost:8002"
 
     # --- LLM ------------------------------------------------------------
-    anthropic_api_key: Optional[str] = None
-    default_model: str = "claude-sonnet-4-5"
+    # anthropic_api_key: Optional[str] = None
+    # default_model: str = "claude-sonnet-4-5"
+    groq_api_key: Optional[str] = None
+    default_model: str = "openai/gpt-oss-120b"
+
+
 
     # --- Auth -----------------------------------------------------------
     # Bearer token clients use to call the gateway. Rotate via secret manager in prod.
